@@ -1,26 +1,26 @@
+import 'dart:async';
+import 'dart:developer';
 import 'package:flutter/material.dart';
-
+import 'package:test_application/ui/theme/app_theme.dart';
 import 'pages/home/home.dart';
 
-
 void main() {
-  runApp(const MyApp());
+  runZonedGuarded(() {
+    runApp(const MoodDiary());
+  }, (error, stackTrace) {
+    log('Произошла ошибка: $error');
+  });
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MoodDiary extends StatelessWidget {
+  const MoodDiary({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
+      debugShowCheckedModeBanner: false,
+      theme: AppTheme.lightTheme,
       home: const HomePage(),
     );
   }
 }
-
-
