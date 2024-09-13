@@ -1,8 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class NotesTextField extends StatelessWidget {
-  const NotesTextField({super.key});
+class NotesTextField extends StatefulWidget {
+  const NotesTextField({super.key, required this.onTextChange});
+
+  final ValueChanged<bool> onTextChange;
+
+  @override
+  _NotesTextFieldState createState() => _NotesTextFieldState();
+}
+
+class _NotesTextFieldState extends State<NotesTextField> {
+  final TextEditingController _controller = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.addListener(() {
+      widget.onTextChange(_controller.text.isEmpty);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +49,7 @@ class NotesTextField extends StatelessWidget {
               ],
             ),
             child: TextField(
+              controller: _controller,
               cursorColor: Colors.black,
               style: GoogleFonts.nunito(
                   textStyle: const TextStyle(

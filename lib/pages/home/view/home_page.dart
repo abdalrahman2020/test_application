@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'dart:async';
 import 'package:intl/date_symbol_data_local.dart';
-
+import 'package:test_application/pages/calendar/calendar.dart';
 import 'package:test_application/pages/home/components/components.dart';
 
 class HomePage extends StatefulWidget {
@@ -17,6 +16,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   late Timer _timer;
   String _currentDateTime = '';
+  bool _isEmotionSelected = false;
+  bool _isNotesTextFieldEmpty = true;
 
   void _updateDateTime() {
     setState(() {
@@ -39,16 +40,33 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
+  void _onEmotionSelected(bool isSelected) {
+    setState(() {
+      _isEmotionSelected = isSelected;
+    });
+  }
+
+  void _onNotesTextChanged(bool isEmpty) {
+    setState(() {
+      _isNotesTextFieldEmpty = isEmpty;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromRGBO(255, 253, 252, 1),
       appBar: AppBar(
-        surfaceTintColor: Colors.white,
+        backgroundColor: const Color.fromRGBO(255, 253, 252, 1),
         centerTitle: true,
         actions: [
           InkWell(
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const CalendarPage()),
+                );
+              },
               child: const Icon(
                 Icons.calendar_month,
                 color: Color.fromRGBO(188, 188, 191, 1),
@@ -69,28 +87,21 @@ class _HomePageState extends State<HomePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 12),
-            const ToggleButtonHeading(),
-            const SizedBox(height: 30),
-            Padding(
-              padding: const EdgeInsets.only(left: 20),
-              child: Text(
-                'Что чувствуешь?',
-                style: GoogleFonts.nunito(
-                    textStyle: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w800,
-                  color: Color.fromRGBO(35, 35, 43, 1),
-                )),
-              ),
-            ),
+            RowEmotionList(onEmotionSelected: _onEmotionSelected),
             const SizedBox(height: 20),
-            const RowEmotionList(),
-            const SizedBox(height: 12),
-            const BaseSlider(title: 'Уровень стресса', firstValue: 'Низкий', secondValue: 'Высокий'),
-            const BaseSlider(title: 'Самооценка', firstValue: 'Неуверенность', secondValue: 'Уверенность'),
-            const NotesTextField(),
+            BaseSlider(
+                title: 'Уровень стресса',
+                firstValue: 'Низкий',
+                secondValue: 'Высокий',
+                isEmotionSelected: _isEmotionSelected),
+            BaseSlider(
+                title: 'Самооценка',
+                firstValue: 'Неуверенность',
+                secondValue: 'Уверенность',
+                isEmotionSelected: _isEmotionSelected),
+            NotesTextField(onTextChange: _onNotesTextChanged),
             const SizedBox(height: 36),
-            const SaveButton(),
+            SaveButton(isEmotionSelected: _isEmotionSelected, isNotesTextFieldNotEmpty: _isNotesTextFieldEmpty),
             const SizedBox(height: 24),
           ],
         ),

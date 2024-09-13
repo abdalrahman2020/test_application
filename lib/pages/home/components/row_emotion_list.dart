@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:test_application/pages/home/components/components.dart';
 
 class RowEmotionList extends StatefulWidget {
-  const RowEmotionList({super.key});
+  final ValueChanged<bool> onEmotionSelected;
+
+  const RowEmotionList({super.key, required this.onEmotionSelected});
 
   @override
   _RowEmotionListState createState() => _RowEmotionListState();
@@ -65,6 +66,7 @@ class _RowEmotionListState extends State<RowEmotionList> {
         _selectedEmotionIndices.add(index);
         _lastSelectedEmotionIndex = index;
       }
+      widget.onEmotionSelected(_lastSelectedEmotionIndex != null);
     });
   }
 

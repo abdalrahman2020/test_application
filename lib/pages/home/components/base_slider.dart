@@ -4,8 +4,14 @@ import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 
 class BaseSlider extends StatefulWidget {
-  const BaseSlider({super.key, required this.firstValue, required this.secondValue, required this.title});
-
+  const BaseSlider({
+    super.key,
+    required this.firstValue,
+    required this.secondValue,
+    required this.title,
+    required this.isEmotionSelected,
+  });
+  final bool isEmotionSelected;
   final String firstValue;
   final String secondValue;
   final String title;
@@ -55,51 +61,64 @@ class _BaseSliderState extends State<BaseSlider> {
               const SizedBox(height: 16),
               SizedBox(
                 width: double.infinity,
-                child: SfSliderTheme(
-                  data: const SfSliderThemeData(
-                    thumbRadius: 12,
-                    tickOffset: Offset(0, -22),
-                    tickSize: Size(2, 8),
-                    activeTickColor: Color.fromRGBO(255, 135, 2, 1),
-                  ),
-                  child: SfSlider(
-                    min: 0,
-                    max: 5.0,
-                    stepSize: 1,
-                    value: currentSliderValue,
-                    interval: 1,
-                    showTicks: true,
-                    onChanged: (dynamic value) {
-                      setState(() {
-                        currentSliderValue = value;
-                      });
-                    },
-                    thumbIcon: Container(
-                      width: 24,
-                      height: 24,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
-                            blurRadius: 5,
-                          ),
-                        ],
-                      ),
-                      child: Center(
-                        child: Container(
-                          width: 12,
-                          height: 12,
-                          decoration: const BoxDecoration(
-                            color: Color.fromRGBO(255, 135, 2, 1),
-                            shape: BoxShape.circle,
+                child: Expanded(
+                  child: SfSliderTheme(
+                    data: SfSliderThemeData(
+                      disabledActiveTrackColor: widget.isEmotionSelected
+                          ? const Color.fromRGBO(255, 135, 2, 1)
+                          : const Color.fromRGBO(225, 221, 216, 1),
+                      thumbRadius: 12,
+                      tickOffset: const Offset(0, -22),
+                      tickSize: const Size(2, 8),
+                      activeTickColor: widget.isEmotionSelected
+                          ? const Color.fromRGBO(255, 135, 2, 1)
+                          : const Color.fromRGBO(225, 221, 216, 1),
+                    ),
+                    child: SfSlider(
+                      min: 0,
+                      max: 5.0,
+                      stepSize: 1,
+                      value: widget.isEmotionSelected ? currentSliderValue : 2.5,
+                      interval: 1,
+                      showTicks: true,
+                      onChanged: widget.isEmotionSelected
+                          ? (dynamic value) {
+                              setState(() {
+                                currentSliderValue = value;
+                              });
+                            }
+                          : null,
+                      thumbIcon: Container(
+                        width: 24,
+                        height: 24,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              blurRadius: 5,
+                            ),
+                          ],
+                        ),
+                        child: Center(
+                          child: Container(
+                            width: 12,
+                            height: 12,
+                            decoration: BoxDecoration(
+                              color: widget.isEmotionSelected
+                                  ? const Color.fromRGBO(255, 135, 2, 1)
+                                  : const Color.fromRGBO(225, 221, 216, 1),
+                              shape: BoxShape.circle,
+                            ),
                           ),
                         ),
                       ),
+                      activeColor: widget.isEmotionSelected
+                          ? const Color.fromRGBO(255, 135, 2, 1)
+                          : const Color.fromRGBO(225, 221, 216, 1),
+                      inactiveColor: const Color.fromRGBO(225, 221, 216, 1),
                     ),
-                    activeColor: const Color.fromRGBO(255, 135, 2, 1),
-                    inactiveColor: const Color.fromRGBO(225, 221, 216, 1),
                   ),
                 ),
               ),
