@@ -10,8 +10,9 @@ class RowEmotionList extends StatefulWidget {
 }
 
 class _RowEmotionListState extends State<RowEmotionList> {
-  int _selectedIndex = -1;
-  bool _isShow = false;
+  final List<int> _selectedEmotionIndices = [];
+  int? _lastSelectedEmotionIndex;
+  final Map<int, Set<String>> selectedSubEmotions = {};
 
   @override
   Widget build(BuildContext context) {
@@ -40,19 +41,41 @@ class _RowEmotionListState extends State<RowEmotionList> {
           ),
         ),
         const SizedBox(height: 20),
-        VisibilityWrap(isShow: _isShow, currentEmotion: _selectedIndex),
+        if (_lastSelectedEmotionIndex != null)
+          VisibilityWrap(
+            isShow: true,
+            currentEmotion: _lastSelectedEmotionIndex!,
+            selectedSubEmotions: selectedSubEmotions[_lastSelectedEmotionIndex] ?? {},
+            onSubEmotionSelected: _onSubEmotionSelected,
+          ),
       ],
     );
   }
 
   void _onEmotionTapped(int index) {
     setState(() {
-      if (_selectedIndex == index) {
-        _selectedIndex = -1;
-        _isShow = false;
+      if (_selectedEmotionIndices.contains(index)) {
+        _selectedEmotionIndices.remove(index);
+        if (_lastSelectedEmotionIndex == index && _selectedEmotionIndices.isNotEmpty) {
+          _lastSelectedEmotionIndex = _selectedEmotionIndices.last;
+        } else if (_selectedEmotionIndices.isEmpty) {
+          _lastSelectedEmotionIndex = null;
+        }
       } else {
-        _selectedIndex = index;
-        _isShow = true;
+        _selectedEmotionIndices.add(index);
+        _lastSelectedEmotionIndex = index;
+      }
+    });
+  }
+
+  void _onSubEmotionSelected(int emotionIndex, String subEmotion) {
+    setState(() {
+      selectedSubEmotions[emotionIndex] ??= {};
+
+      if (selectedSubEmotions[emotionIndex]!.contains(subEmotion)) {
+        selectedSubEmotions[emotionIndex]!.remove(subEmotion);
+      } else {
+        selectedSubEmotions[emotionIndex]!.add(subEmotion);
       }
     });
   }
@@ -60,14 +83,12 @@ class _RowEmotionListState extends State<RowEmotionList> {
   Widget _buildEmotionContainer(int index, String name, String image) {
     return GestureDetector(
       onTap: () {
-        setState(() {
-          _onEmotionTapped(index);
-        });
+        _onEmotionTapped(index);
       },
       child: EmotionContainer(
         name: name,
         image: image,
-        isSelected: _selectedIndex == index,
+        isSelected: _selectedEmotionIndices.contains(index),
       ),
     );
   }

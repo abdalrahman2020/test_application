@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class VisibilityWrap extends StatelessWidget {
   VisibilityWrap({
     super.key,
     required bool isShow,
     required this.currentEmotion,
+    required this.selectedSubEmotions,
+    required this.onSubEmotionSelected,
   }) : _isShow = isShow;
 
   final bool _isShow;
   final int currentEmotion;
+  final Set<String> selectedSubEmotions;
+  final Function(int emotionIndex, String subEmotion) onSubEmotionSelected;
   final Map<int, List<String>> emotionLists = {
     0: [
       'Возбуждение',
@@ -85,55 +88,70 @@ class VisibilityWrap extends StatelessWidget {
       'Стойкость',
     ],
   };
-
   @override
   Widget build(BuildContext context) {
     List<String> listEmotions = emotionLists[currentEmotion] ?? [];
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Visibility(
-          visible: _isShow,
-          child: Wrap(
-            spacing: 8.0,
-            children: listEmotions.map((text) => _WrapContainer(text: text)).toList(),
-          )),
+        visible: _isShow,
+        child: Wrap(
+          spacing: 8.0,
+          children: listEmotions
+              .map((text) => _WrapContainer(
+                    text: text,
+                    isSelected: selectedSubEmotions.contains(text),
+                    onTap: () => onSubEmotionSelected(currentEmotion, text),
+                  ))
+              .toList(),
+        ),
+      ),
     );
   }
 }
 
 class _WrapContainer extends StatelessWidget {
-  const _WrapContainer({required this.text});
+  const _WrapContainer({
+    required this.text,
+    required this.isSelected,
+    required this.onTap,
+  });
+
   final String text;
+  final bool isSelected;
+  final VoidCallback onTap;
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: Color.fromRGBO(182, 161, 192, 0.11),
-            spreadRadius: 0,
-            blurRadius: 10,
-            offset: Offset(2, 4),
-          ),
-        ],
-      ),
-      child: Chip(
-        backgroundColor: Colors.white,
-        side: const BorderSide(color: Colors.white),
-        label: Text(
-          text,
-          style: GoogleFonts.nunito(
-            textStyle: const TextStyle(
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        decoration: const BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: Color.fromRGBO(182, 161, 192, 0.11),
+              spreadRadius: 0,
+              blurRadius: 10,
+              offset: Offset(2, 4),
+            ),
+          ],
+        ),
+        child: Chip(
+          backgroundColor: isSelected ? const Color.fromRGBO(255, 135, 2, 1) : Colors.white,
+          side: BorderSide(color: isSelected ? const Color.fromRGBO(255, 135, 2, 1) : Colors.white),
+          label: Text(
+            text,
+            style: TextStyle(
               fontWeight: FontWeight.w400,
               fontSize: 14,
-              color: Color.fromRGBO(76, 76, 105, 1),
+              color: isSelected ? Colors.white : const Color.fromRGBO(76, 76, 105, 1),
             ),
           ),
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-        labelPadding: const EdgeInsets.only(right: 10),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(5),
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+          labelPadding: const EdgeInsets.only(right: 10),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(5),
+          ),
         ),
       ),
     );

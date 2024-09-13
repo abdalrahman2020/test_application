@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'dart:async';
@@ -43,9 +44,25 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       backgroundColor: const Color.fromRGBO(255, 253, 252, 1),
       appBar: AppBar(
+        surfaceTintColor: Colors.white,
         centerTitle: true,
-        actions: [InkWell(onTap: () {}, child: const Icon(Icons.calendar_month)), const SizedBox(width: 20)],
-        title: Text(_currentDateTime),
+        actions: [
+          InkWell(
+              onTap: () {},
+              child: const Icon(
+                Icons.calendar_month,
+                color: Color.fromRGBO(188, 188, 191, 1),
+              )),
+          const SizedBox(width: 20)
+        ],
+        title: Text(_currentDateTime,
+            style: GoogleFonts.nunito(
+              textStyle: const TextStyle(
+                fontWeight: FontWeight.w700,
+                fontSize: 22,
+                color: Color.fromRGBO(188, 188, 191, 1),
+              ),
+            )),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -68,13 +85,13 @@ class _HomePageState extends State<HomePage> {
             ),
             const SizedBox(height: 20),
             const RowEmotionList(),
-            const SizedBox(height: 24),
+            const SizedBox(height: 12),
             const BaseSlider(title: 'Уровень стресса', firstValue: 'Низкий', secondValue: 'Высокий'),
             const BaseSlider(title: 'Самооценка', firstValue: 'Неуверенность', secondValue: 'Уверенность'),
             const NotesTextField(),
             const SizedBox(height: 36),
             const SaveButton(),
-            const SizedBox(height: 12),
+            const SizedBox(height: 24),
           ],
         ),
       ),
