@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'dart:async';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:test_application/pages/calendar/calendar.dart';
+import 'package:test_application/pages/calendar/view/calendar_page.dart';
 import 'package:test_application/pages/home/components/components.dart';
 
 class HomePage extends StatefulWidget {
@@ -87,6 +88,21 @@ class _HomePageState extends State<HomePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 12),
+            const ToggleButtonHeading(),
+            const SizedBox(height: 30),
+            Padding(
+              padding: const EdgeInsets.only(left: 20),
+              child: Text(
+                'Что чувствуешь?',
+                style: GoogleFonts.nunito(
+                    textStyle: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w800,
+                  color: Color.fromRGBO(35, 35, 43, 1),
+                )),
+              ),
+            ),
+            const SizedBox(height: 20),
             RowEmotionList(onEmotionSelected: _onEmotionSelected),
             const SizedBox(height: 20),
             BaseSlider(
